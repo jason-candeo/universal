@@ -75,7 +75,6 @@ server.use('/', express.static('public', {index: false}));
 //  * Catch all routes and return the `index.html`
 //  */
 server.get('*', (req, res) => {
-  // console.log('REQUEST', req);
   res.render('../public/index.html', {
     req,
     res
