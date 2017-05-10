@@ -4,7 +4,7 @@
   "host": "localhost",
   "port": {
     "browser": 1337,
-    "server": 8000
+    "server": 8080
   },
   "root": ".",
   "paths": {
