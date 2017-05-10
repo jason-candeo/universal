@@ -59,7 +59,7 @@ server.use(function(err, req, res) {
 /**
  * Port & host settings
  */
-const PORT = process.env.PORT || 1337;
+const PORT = process.env.PORT || 8081;
 const HOST = process.env.BASE_URL || 'localhost';
 const baseUrl = `http://${HOST}:${PORT}`;
 

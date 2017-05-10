@@ -3,7 +3,7 @@
   "debug": true,
   "host": "localhost",
   "port": {
-    "browser": 1337,
+    "browser": 8081,
     "server": 8080
   },
   "root": ".",

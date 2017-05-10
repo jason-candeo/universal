@@ -2,6 +2,8 @@
 import 'zone.js/dist/zone-node';
 import 'reflect-metadata';
 import 'rxjs/Rx';
+import * as fs from 'fs';
+import * as path from 'path';
 
 // angular
 import { enableProdMode } from '@angular/core';
@@ -18,6 +20,42 @@ enableProdMode();
 const server = express();
 server.use(compression());
 
+// copy over google site verification
+
+/**
+ * Look ma, it's cp -R.
+ * @param {string} src The path to the thing to copy.
+ * @param {string} dest The path to the new copy.
+ */
+var copyRecursiveSync = function(src: string, dest: string) {
+  var exists = fs.existsSync(src);
+  var stats = exists && fs.statSync(src);
+  var isDirectory = exists && stats.isDirectory();
+  if (exists && isDirectory) {
+    // fs.mkdirSync(dest);
+    fs.readdirSync(src).forEach(function(childItemName: any) {
+      copyRecursiveSync(path.join(src, childItemName),
+                        path.join(dest, childItemName));
+    });
+  } else {
+    fs.linkSync(src, dest);
+  }
+};
+
+var temp_exists = fs.existsSync('./.temp');
+var temp_stats = temp_exists && fs.statSync('./.temp');
+var temp_isDirectory = temp_exists && temp_stats.isDirectory();
+
+if(!temp_exists || !temp_isDirectory) {
+  console.log('\n[server] No temp dir detected, creating...');
+  fs.mkdirSync('./.temp');
+  console.log('[server] Done creating .temp folder!\n');
+}
+
+console.log('\n[server] Copying all google verification files to public...');
+copyRecursiveSync("./google-verification", "./public");
+console.log('[server] Done with copy!\n');
+
 /**
  * Set view engine
  */
@@ -33,10 +71,11 @@ server.set('views', 'public');
  */
 server.use('/', express.static('public', {index: false}));
 
-/**
- * Catch all routes and return the `index.html`
- */
+// /**
+//  * Catch all routes and return the `index.html`
+//  */
 server.get('*', (req, res) => {
+  // console.log('REQUEST', req);
   res.render('../public/index.html', {
     req,
     res
